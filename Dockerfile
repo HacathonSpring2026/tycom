@@ -1,0 +1,64 @@
+# Stage1: Base build stage
+FROM python:3.13-slim AS builder
+
+# appディレクトリを作成
+RUN mkdir /app
+
+# コンテナの中にworkingディレクトリをセット
+WORKDIR /app
+
+# 環境変数をセット
+# Pythonが.pycファイルをディスクに書き込むのを防ぐ
+ENV PYTHONDONTWRITEBYTECODE=1
+# Pythonが標準出力と標準エラー出力をバッファリングするのを防ぐ
+ENV PYTHONUNBUFFERED=1
+
+# MySQLのビルドに必要なシステムパッケージをインストール
+RUN apt-get update && apt-get install -y \
+	gcc \
+	default-libmysqlclient-dev \
+	pkg-config \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# requirements.txtをカレントディレクトリにコピー
+COPY requirements.txt .
+
+# requirements.txtの内容をインストール
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Production stage
+FROM python:3.13-slim
+
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -r appuser && \
+	mkdir /app && \
+	chown -R appuser /app
+
+# builder stageからPythonの依存関係をコピー
+COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# workingディレクトリをセット
+WORKDIR /app
+
+# アプリケーションコードをコピー
+COPY --chown=appuser:appuser . .
+
+# Pythonを最適化するために環境変数を設定
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# root userではないものに切り替え
+USER appuser
+
+# Djangoのポートを指定
+EXPOSE 8000
+
+# Djangoの開発サーバーを走らせる
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
