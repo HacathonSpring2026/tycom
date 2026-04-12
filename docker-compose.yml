@@ -1,22 +1,29 @@
 services:
   db:
     image: mysql:8.0
+    container_name: tycom-db
     ports: 
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   django-web:
     build: .
-    container_name: django-docker
+    container_name: tycom-django
     ports:
       - "8000:8000"
     volumes:
       - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
 
