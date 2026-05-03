@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tycom",
     "accounts",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
 ]
 
 MIDDLEWARE = [
@@ -50,7 +53,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
+SITE_ID = 1
 
 ROOT_URLCONF = "my_app.urls"
 
@@ -131,3 +136,25 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",  # 一般ユーザー用（メールアドレスでの認証）
+    "django.contrib.auth.backends.ModelBackend",  # 管理サイト用（ユーザー名での認証）
+)
+
+# メールアドレスでの認証に変更
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+
+# メールアドレスの本人確認をする設定
+ACCOUNT_EMAIL_VERIFICATION = "none"
+# メールアドレスを必須にする
+ACCOUNT_EMAIL_REQUIRED = True
+
+# ログイン/ログアウト後の遷移先の設定
+LOGIN_REDIRECT_URL = "/stage-select/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+# ログアウトを押したら一発でログアウトする設定
+ACCOUNT_LOGOUT_ON_GET = True
