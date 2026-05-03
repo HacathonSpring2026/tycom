@@ -1,2 +1,4 @@
 hackathon/
 .env
+__pycache__/
+*.pyc

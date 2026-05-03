@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Categories(models.Model):
@@ -71,7 +71,7 @@ class Random_names(models.Model):
 
 class Accuracies(models.Model):
     user_id = models.ForeignKey(
-        User, verbose_name="ユーザーID", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, verbose_name="ユーザーID", on_delete=models.CASCADE
     )
     command_id = models.ForeignKey(
         Commands, verbose_name="コマンドID", on_delete=models.CASCADE
@@ -104,7 +104,7 @@ class Extensions(models.Model):
 class Scores(models.Model):
     score = models.PositiveIntegerField(verbose_name="スコア")
     user_id = models.ForeignKey(
-        User, verbose_name="ユーザーID", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, verbose_name="ユーザーID", on_delete=models.CASCADE
     )
     category_id = models.ForeignKey(
         Categories, verbose_name="カテゴリーID", on_delete=models.CASCADE
