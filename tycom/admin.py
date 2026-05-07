@@ -1,26 +1,26 @@
 from django.contrib import admin
 from .models import (
-    Categories,
-    Questions,
-    Random_names,
-    Accuracies,
-    Commands,
-    Extensions,
-    Scores,
+    Category,
+    Question,
+    Random_name,
+    Accuracy,
+    Command,
+    Extension,
+    Score,
 )
 
 
-@admin.register(Categories)
-class Categoriesagdmin(admin.ModelAdmin):
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "category_name", "created_at", "updated_at")
 
 
-@admin.register(Questions)
-class Questionsagdmin(admin.ModelAdmin):
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "question",
-        "command_id",
+        "command",
         "description",
         "answer",
         "created_at",
@@ -28,18 +28,17 @@ class Questionsagdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Random_names)
-class Random_namesagdmin(admin.ModelAdmin):
+@admin.register(Random_name)
+class Random_nameAdmin(admin.ModelAdmin):
     list_display = ("id", "random_name", "created_at", "updated_at")
 
 
-@admin.register(Accuracies)
-class Accuraciesagdmin(admin.ModelAdmin):
+@admin.register(Accuracy)
+class AccuracyAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "user_id",
-        "command_id",
-        "accuracy_rate",
+        "user",
+        "command",
         "challenge_count",
         "correct_count",
         "created_at",
@@ -47,11 +46,11 @@ class Accuraciesagdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Commands)
-class Commandsagdmin(admin.ModelAdmin):
+@admin.register(Command)
+class CommandAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "category_id",
+        "category",
         "command",
         "target_type",
         "created_at",
@@ -59,18 +58,18 @@ class Commandsagdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Extensions)
-class Extensionsagdmin(admin.ModelAdmin):
+@admin.register(Extension)
+class ExtensionAdmin(admin.ModelAdmin):
     list_display = ("id", "extension", "created_at", "updated_at")
 
 
-@admin.register(Scores)
-class Scoresagdmin(admin.ModelAdmin):
+@admin.register(Score)
+class ScoreAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "score",
-        "user_id",
-        "category_id",
+        "user",
+        "category",
         "created_at",
         "updated_at",
     )
