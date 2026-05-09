@@ -83,6 +83,7 @@ class Accuracy(models.Model):
 
     class Meta:
         verbose_name_plural = "accuracy"
+
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "command"], name="unique_user_command"
