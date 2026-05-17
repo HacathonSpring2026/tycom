@@ -1,6 +1,7 @@
 from django.views import View
-from .models import Category
+from .models import Category, Command, Question, Random_name, Extension
 from django.shortcuts import redirect, render
+import random
 
 
 class StageSelectView(View):
@@ -24,7 +25,27 @@ class StageSelectView(View):
 
 class GamePlayView(View):
     def get(self, request):
-        return HttpResponse("問題画面")
+        category_id = request.session["category_id"]
+        commands = list(Command.objects.filter(category_id=category_id))
+        command = random.choice(commands)
+        questions = list(Question.objects.filter(command_id=command.id))
+        question = random.choice(questions)
+        if command.target_type == "directory":
+            directory_name = Random_name.objects.order_by("?").first()
+            return render(
+                request,
+                "game_play.html",
+                {"question": question, "directory_name": directory_name},
+            )
+        elif command.target_type == "file":
+            random_name = Random_name.objects.order_by("?").first()
+            random_extension = Extension.objects.order_by("?").first()
+            file_name = random_name.random_name + random_extension.Extension
+            return render(
+                request,
+                "game_play.html",
+                {"question": question, "file_name": file_name},
+            )
 
 
 class GameTimeEndView(View):
