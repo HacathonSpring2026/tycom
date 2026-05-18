@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Category
+
+from .models import Category, Command, Question, Random_name, Extension
 
 
 class StageSelectViewTest(TestCase):
@@ -39,3 +40,33 @@ class StageSelectViewTest(TestCase):
             reverse("tycom:stage_select"), {"category_id": self.category1.id}
         )
         self.assertEqual(response.status_code, 302)
+
+
+class GamePlayViewTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(category_name="Git")
+        self.command = Command.objects.create(
+            command="git init",
+            target_type="directory",
+            category_id=self.category.id,
+        )
+        self.question = Question.objects.create(
+            question="リポジトリを初期化するコマンドは？",
+            command_id=self.command.id,
+            description="説明",
+            answer="git init",
+        )
+        self.random_name = Random_name.objects.create(random_name="myproject")
+        self.extension = Extension.objects.create(extension=".py")
+        # セッションにカテゴリーIDを保存
+        session = self.client.session
+        session["category_id"] = str(self.category.id)
+        session.save()
+
+    def test_ページが開ける(self):
+        response = self.client.get(reverse("tycom:game_play"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_questionがHTMLに渡される(self):
+        response = self.client.get(reverse("tycom:game_play"))
+        self.assertIn("question", response.context)
