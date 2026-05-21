@@ -2,6 +2,9 @@ from django.views import View
 from .models import Category, Command, Question, Random_name, Extension
 from django.shortcuts import redirect, render
 import random
+from django.urls import reverse
+from urllib.parse import urlencode
+from django.http import HttpResponse
 
 
 class StageSelectView(View):
@@ -14,14 +17,25 @@ class StageSelectView(View):
         )  #:category_listと言うを変数をcategory_listという名前でHTMLに渡す
 
     def post(self, request):
+        # HTMLからカテゴリIDをもらい変数へ入れる
         category_id = request.POST.get(
             "category_id"
-        )  # HTMLからカテゴリIDをもらい変数へ入れる
+        )
+        mode = request.POST.get(
+            "mode"
+        )
+
         request.session["category_id"] = (
             category_id  # セッションへ['category_id']と言う名前で保存
         )
-        return redirect("tycom:game_play")  # 保存まで完了したら['category_id']へ飛ぶ
 
+        # URLへパラメーターの埋め込み処理
+        query = urlencode({
+            "mode": mode,
+        })
+
+        # 保存まで完了したら['category_id']へ飛ぶ
+        return redirect(f"{reverse('tycom:game_play')}?{query}")
 
 class GamePlayView(View):
     def get(self, request):

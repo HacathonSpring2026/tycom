@@ -1,0 +1,15 @@
+/* top画面 */
+.main-panel{
+    width: 70%;
+    max-width: 700px;
+    height: auto;
+}
+
+.disc-label{
+    margin-left: 10px;
+}
+
+.select-contents{
+    display: flex;
+    margin: 20px 0 30px;
+}

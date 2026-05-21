@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block extra_css %}
+    {% endblock %}
+
+    <title>TYCOM</title>
+</head>
+
+<body>
+    <div class="app">
+        <header class="header-area">
+            <h1 class="main-title">
+                {% block page_title %}
+                TYCOM
+                {% endblock %}
+            </h1>
+            <nav class="menu-area">
+                <label class="menu-select">MENU</label>
+                <div class="menu-dropdown">
+                    {% comment %}
+                    <!-- <a class="menu-select" href="{% url 'login' %}">LOGIN</a>
+                    <a class="menu-select" href="{% url 'signup' %}">SIGN UP</a>
+                    <a class="menu-select" href="{% url 'ranking' %}">RANKING</a>
+                    <a class="menu-select" href="{% url 'command' %}">COMMAND LIST</a> -->
+                    {% endcomment %}
+                </div>
+            </nav>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="contents-area">
+            {% block option_area %}
+            {% endblock %}
+            <section class="main-panel">
+                <div class="terminal-wrapper">
+                    {% block panel_content %}
+                    {% endblock %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ページ別JS -->
+    {% block extra_js %}
+    {% endblock %}
+</body>
+
+</html>

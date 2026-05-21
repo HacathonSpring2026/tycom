@@ -1,0 +1,267 @@
+body{
+    background-color: black;
+    font-weight: 800;
+    color: #00CC33;
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.6);
+    letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+}
+
+input{
+    width: 100%;
+    font-size: 16px;
+    color: #00CC33;
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.6);
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/*
+========================================
+class関連
+========================================
+*/
+
+/* 画面全体 */
+.app{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ヘッダーエリア */
+.header-area{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* 各タイトル */
+.main-title{
+    font-size: 50px;
+    color: #C2FFD2;
+    letter-spacing: 0.15em;
+    text-shadow:
+        0 0 2px rgba(0, 255, 65, 0.6),
+        0 0 6px rgba(0, 255, 65, 0.5),
+        0 0 12px rgba(0, 255, 65, 0.4),
+        0 0 20px rgba(0, 255, 65, 0.25);
+}
+
+/* メニューエリア */
+.menu-area{
+    position: absolute;
+    right: 40px;
+}
+
+/* コンテンツエリア */
+.contents-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+}
+
+/* 選択オプション表示エリア */
+.option-area{
+    display: flex;
+    width: 70%;
+    max-width: 700px;
+}
+
+/* 各選択オプション塊 */
+.selected-option{
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+/* 選択オプションタイトル*/
+.selected-title{
+    padding: 3px;
+}
+
+/* 選択オプション値*/
+.selected-value{
+    padding: 3px 3px 3px 10px;
+    width: 150px;
+    border: 1px solid rgba(0, 204, 68);
+    background-color: rgba(0, 255, 65, 0.2);
+
+}
+
+/* ゲーム選択エリア */
+.main-panel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 400px;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 204, 68);
+    box-shadow:
+        inset 0 0 1px rgba(0, 255, 65, 0.6),
+        0 0 6px rgba(0, 255, 102, 0.35);
+}
+
+.terminal-wrapper{
+    width: 100%;
+    height: 100%;
+}
+
+.main-panel form{
+    width: 100%;
+    padding: 20px;
+}
+
+.disc-label{
+    font-weight: normal;
+}
+
+.menu-select{
+    padding: 0px 20px;
+}
+
+/* ボタンエリア */
+.button-area{
+    display: flex;
+    justify-content: space-evenly;;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* 入力エリア全体 */
+.input-box{
+    width: 100%;
+    text-align: center;
+    padding: 0;
+}
+
+/* 入力コンテンツ */
+.input-contents{
+    width: 100%;
+    display: flex;
+    padding: 20px 3px 1px;
+    text-align: left;
+    border-bottom: #00CC33 solid 2px;
+}
+
+.button-contents{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 20px;
+    margin-top: 150px;
+}
+
+.input-contents > label{
+    display: inline-block;
+    width: 170px;
+}
+
+/* ボタン定義 */
+.button-contents > button{
+    text-align: center;
+    width: auto;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-shadow: inherit;
+    padding: 0;
+    font-size: 25px;
+    line-height: 1;
+    vertical-align: top;
+}
+
+
+/*
+========================================
+挙動関連
+========================================
+*/
+
+/* hover時：未選択のものだけ > と _ を出す */
+.menu-select:not(.selected):hover {
+    color: #FFCC23;
+    text-shadow:
+        0 0 4px rgba(255, 204, 35, 0.6),
+        0 0 8px rgba(255, 204, 35, 1);
+    cursor: pointer;
+}
+
+.menu-select:not(.selected):hover::before {
+    color: #FFCC23;
+    text-shadow:
+        0 0 4px rgba(255, 204, 35, 0.6),
+        0 0 8px rgba(255, 204, 35, 1);
+    content: "> ";
+}
+
+.menu-select:not(.selected):hover::after {
+    color: #FFCC23;
+    text-shadow:
+        0 0 4px rgba(255, 204, 35, 0.6),
+        0 0 8px rgba(255, 204, 35, 1);
+    content: "_";
+    animation: blink 1s infinite;
+}
+
+
+/* 選択時：> だけ出す */
+.menu-select.selected {
+    color: #FFCC23;
+    text-shadow:
+        0 0 4px rgba(255, 204, 35, 0.6),
+        0 0 8px rgba(255, 204, 35, 1);
+}
+
+.menu-select.selected::before {
+    color: #FFCC23;
+    text-shadow:
+        0 0 4px rgba(255, 204, 35, 0.6),
+        0 0 8px rgba(255, 204, 35, 1);
+    content: "> ";
+}
+
+/* 選択中にhoverしても _ は出さない */
+.menu-select.selected:hover::after {
+    content: "";
+}
+
+
+/* 点滅 */
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
