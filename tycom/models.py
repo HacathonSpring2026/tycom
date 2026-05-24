@@ -23,7 +23,7 @@ class Command(models.Model):
     category = models.ForeignKey(
         Category, verbose_name="カテゴリーID", on_delete=models.CASCADE
     )
-    command = models.CharField(verbose_name="コマンド", max_length=50)
+    command = models.CharField(verbose_name="コマンド", max_length=200)
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
     target_type = models.CharField(

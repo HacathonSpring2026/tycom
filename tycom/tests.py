@@ -69,4 +69,4 @@ class GamePlayViewTest(TestCase):
 
     def test_questionがHTMLに渡される(self):
         response = self.client.get(reverse("tycom:game_play"))
-        self.assertIn("question", response.context)
+        self.assertIn("question_data", response.context)
