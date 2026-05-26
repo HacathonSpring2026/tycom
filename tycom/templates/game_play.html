@@ -1,0 +1,52 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/game_play.css' %}">
+{% endblock %}
+
+{% block option_area %}
+<div class="game-header-row">
+    <div class="option-area">
+        <div class="selected-option">
+            <label class="selected-title">SELECT COMMAND</label>
+            <label class="selected-value" id="category_name"></label>
+        </div>
+        <div class="selected-option">
+            <label class="selected-title">SELECT MODE</label>
+            <label class="selected-value" id="selected-mode"></label>
+        </div>
+    </div>
+    <a href="{% url 'tycom:stage_select' %}" class="exit-button">> Exit</a>
+</div>
+{% endblock %}
+
+{% block panel_content %}
+<div class="game-play-panel">
+    <div class="question-header">
+        <div class="time-area">
+            TIME：<span id="time-count" style="color: white;">20</span>
+        </div>
+        <div class="question-title">
+            QUESTION
+        </div>
+    </div>
+    <div class="question-body">
+        <p class="question-text" id="question-text"></p>
+    </div>
+    {{ question_data|json_script:"question-data" }}
+    <div class="answer-area">
+        <div class="command-line">
+            <span class="prompt-text">C:\USERS\USER_NAME&gt;</span>
+            <div class="input-wrapper">
+                <span class="answer-hint" id="answer-hint"></span>
+                <input type="text" id="answer-input" autocomplete="off" autofocus>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/game_play.js' %}"></script>
+{% endblock %}
