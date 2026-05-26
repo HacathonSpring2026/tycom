@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
-
-from .models import Category, Command, Question, Random_name, Extension
+import json
+from .models import Category, Command, Question, Random_name, Extension, Accuracy
 
 
 class StageSelectViewTest(TestCase):
@@ -70,3 +70,100 @@ class GamePlayViewTest(TestCase):
     def test_questionがHTMLに渡される(self):
         response = self.client.get(reverse("tycom:game_play"))
         self.assertIn("question_data", response.context)
+
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+class GameTimeEndViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="pass")
+        self.client.force_login(self.user)
+        self.category = Category.objects.create(category_name="Git")
+        self.command = Command.objects.create(
+            command="git status",
+            target_type="none",
+            category_id=self.category.id,
+        )
+        self.question = Question.objects.create(
+            question="状態確認コマンドは？",
+            command_id=self.command.id,
+            description="説明",
+            answer="git status",
+        )
+
+    def test_POST後にgame_resultへリダイレクトされる(self):
+        data = {"results": []}
+        response = self.client.post(
+            reverse("tycom:game_time_end"),
+            data=json.dumps(data),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_POSTでAccuracyが保存される(self):
+        data = {
+            "results": [
+                {
+                    "question_id": self.question.id,
+                    "typed_chars": 10,
+                    "challenge_count": 2,
+                }
+            ]
+        }
+        self.client.post(
+            reverse("tycom:game_time_end"),
+            data=json.dumps(data),
+            content_type="application/json",
+        )
+        accuracy = Accuracy.objects.get(user=self.user, command=self.command)
+        self.assertEqual(accuracy.challenge_count, 2)
+
+    def test_resultsがセッションに保存される(self):
+        results = [
+            {"question_id": self.question.id, "typed_chars": 10, "challenge_count": 1}
+        ]
+        self.client.post(
+            reverse("tycom:game_time_end"),
+            data=json.dumps({"results": results}),
+            content_type="application/json",
+        )
+        self.assertEqual(self.client.session["results"], results)
+
+
+class GameResultViewTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(category_name="Git")
+        self.command = Command.objects.create(
+            command="git status",
+            target_type="none",
+            category_id=self.category.id,
+        )
+        self.question = Question.objects.create(
+            question="状態確認コマンドは？",
+            command_id=self.command.id,
+            description="説明",
+            answer="git status",
+        )
+
+    def test_ページが開ける(self):
+        response = self.client.get(reverse("tycom:game_result"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_result_listがHTMLに渡される(self):
+        session = self.client.session
+        session["results"] = [{"question_id": self.question.id, "challenge_count": 1}]
+        session.save()
+        response = self.client.get(reverse("tycom:game_result"))
+        self.assertIn("result_list", response.context)
+
+    def test_コマンドと説明が渡される(self):
+        session = self.client.session
+        session["results"] = [{"question_id": self.question.id, "challenge_count": 1}]
+        session.save()
+        response = self.client.get(reverse("tycom:game_result"))
+        result_list = response.context["result_list"]
+        self.assertEqual(result_list[0]["command"], "git status")
+        self.assertEqual(result_list[0]["description"], "説明")

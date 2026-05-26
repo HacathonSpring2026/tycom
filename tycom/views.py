@@ -82,6 +82,8 @@ class GameTimeEndView(View):
         data = json.loads(request.body)
         results = data.get("results", [])
 
+        request.session["results"] = results
+
         for result in results:
             question_id = result.get("question_id")
             challenge_count = result.get("challenge_count", 1)
@@ -106,4 +108,30 @@ class GameTimeEndView(View):
 
 class GameResultView(View):
     def get(self, request):
-        return HttpResponse("結果表示")
+        results = request.session.get("results", [])  # セッションから結果を取得
+        category_id = request.session.get(
+            "category_id"
+        )  # セッションからカテゴリーを取得
+        category = Category.objects.get(id=category_id)  # IDからオブジェクトを取得
+        result_list = []
+        for result in results:
+            try:
+                question = Question.objects.get(
+                    id=result["question_id"]
+                )  # question_idからQuestionを取得
+                result_list.append(  # コマンドと説明文をリストに追加
+                    {
+                        "command": question.command.command,
+                        "description": question.description,
+                    }
+                )
+            except Question.DoesNotExist:  # 存在しないIDは無視
+                pass
+        return render(
+            request,
+            "game_result.html",
+            {
+                "result_list": result_list,
+                "category": category,
+            },
+        )  # resultとカテゴリーをHTMLに渡す
