@@ -23,23 +23,20 @@ class StageSelectView(View):
             "category_id"
         )  # HTMLからカテゴリIDをもらい変数へ入れる
         mode = request.POST.get("mode")
-        request.session["category_id"] = (
-            category_id  # セッションへ['category_id']という名前で保存
-        )
-        query = urlencode({"mode": mode})
-        return redirect(
-            f"{reverse('tycom:game_play')}?{query}"
-        )  # 保存まで完了したらgame_playへ飛ぶ
+        request.session["category_id"] = category_id  # セッションへ['category_id']という名前で保存
+        category = Category.objects.get(id=category_id)
+        query = urlencode({
+            "mode": mode,
+            "category_name": category.category_name,
+        })
+        return redirect(f"{reverse('tycom:game_play')}?{query}")  # 保存まで完了したらgame_playへ飛ぶ
 
 
 class GamePlayView(View):
     def get(self, request):
-        category_id = request.session[
-            "category_id"
-        ]  # セッションに保存されたカテゴリーの取得
-        commands = list(
-            Command.objects.filter(category_id=category_id)
-        )  # 取得したカテゴリーのコマンドをリストで取得
+        category_id = request.session["category_id"]  # セッションに保存されたカテゴリーの取得
+        category = Category.objects.get(id=category_id)
+        commands = list(Command.objects.filter(category_id=category_id))  # 取得したカテゴリーのコマンドをリストで取得
         question_data = []
 
         for _ in range(100):
