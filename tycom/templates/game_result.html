@@ -1,0 +1,64 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/game_result.css' %}">
+{% endblock %}
+{% block page_title %}
+{% endblock %}
+
+{% block option_area %}
+<div class="game-header-row">
+    <div class="option-area">
+        <div class="selected-option">
+            <label class="selected-title">SELECT COMMAND</label>
+            <label class="selected-value">> {{ category.category_name }}</label>
+        </div>
+        <div class="selected-option">
+            <label class="selected-title">SELECT MODE</label>
+            <label class="selected-value">> RESULT</label>
+        </div>
+    </div>
+    <a href="{% url 'tycom:stage_select' %}" class="exit-button">> Exit</a>
+</div>
+{% endblock %}
+
+{% block panel_content %}
+<div class="game-result-panel">
+    <div class="result-header">
+        <div class="time-area">
+            TIME：<span style="color: white;">0</span>
+        </div>
+        <div class="result-title">
+            RESULTS
+        </div>
+        <!-- <div class="score-area">
+            正解数：<span style="color: white;">{{ correct_count }}/{{ total_count }}</span>
+        </div> -->
+    </div>
+    <div class="result-body">
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>COMMAND</th>
+                    <th>DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in result_list %}
+                <tr>
+                    <td class="{% if not result.is_correct %}wrong-command{% endif %}">
+                        {{ result.command }}
+                    </td>
+                    <td>{{ result.description }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">結果がありません</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
