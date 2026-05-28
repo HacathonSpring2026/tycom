@@ -1,0 +1,61 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/top.css' %}">
+{% endblock %}
+
+{% block page_title %}
+TYCOM
+{% endblock %}
+
+{% block option_area %}
+<div class="option-area">
+    <div class="selected-option">
+        <label class="selected-title">SELECT COMMAND</label>
+        <label class="selected-value" id="selected-command"></label>
+    </div>
+
+    <div class="selected-option">
+        <label class="selected-title">SELECT MODE</label>
+        <label class="selected-value" id="selected-mode"></label>
+    </div>
+</div>
+{% endblock %}
+
+{% block panel_content %}
+<form method="post">
+    {% csrf_token %}
+
+    <input type="hidden" name="category_id" id="category-id">
+    <input type="hidden" name="mode" id="mode-id">
+
+    <!-- カテゴリー選択 -->
+    <div class="terminal-line">
+        <label class="disc-label">C:/UserName> ls select/question/commands</label>
+        <div class="select-contents">
+            {% for category in category_list %}
+            <label class="select-category menu-select" data-category="{{ category.id }}">{{category}}</label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- モード選択 -->
+    <div class="terminal-line">
+        <label class="disc-label">C:/UserName> ls mode/select</label>
+        <div class="select-contents">
+            <label class="select-mode menu-select" data-mode="STANDERD">STANDERD</label>
+            <label class="select-mode menu-select" data-mode="PRACTICE">PRACTICE</label>
+        </div>
+    </div>
+
+    <!-- STARTボタン -->
+    <div class="button-contents">
+        <button type="submit" class="menu-select start-button">START</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/top.js' %}"></script>
+{% endblock %}

@@ -40,18 +40,23 @@ RUN useradd -m -r appuser && \
 	mkdir /app && \
 	chown -R appuser /app
 
+RUN mkdir -p /var/run/gunicorn && chown -R appuser:appuser /var/run/gunicorn
+
 # builder stageからPythonの依存関係をコピー
 COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
-
-# collectstaticをすることで画像,CSSを配信できるようにする
-RUN python manage.py collectstatic --noinput
 
 # workingディレクトリをセット
 WORKDIR /app
 
 # アプリケーションコードをコピー
 COPY --chown=appuser:appuser . .
+
+ENV DJANGO_SECRET_KEY=dummy_secret_key_for_building
+ENV DEBUG=False
+
+# collectstaticをすることで画像,CSSを配信できるようにする
+RUN python manage.py collectstatic --noinput
 
 # Pythonを最適化するために環境変数を設定
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -60,8 +65,5 @@ ENV PYTHONUNBUFFERED=1
 # root userではないものに切り替え
 USER appuser
 
-# Djangoのポートを指定
-EXPOSE 8000
-
 # Djangoの開発サーバーを走らせる
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "my_app.wsgi:application"]
+CMD ["gunicorn", "--bind", "unix:/var/run/gunicorn/gunicorn.sock", "--umask", "000", "--workers", "3", "my_app.wsgi:application"]
