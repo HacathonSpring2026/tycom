@@ -1,4 +1,4 @@
-let time = 90;
+let time = 30;
 let timer = null;
 
 document.addEventListener("DOMContentLoaded", function () {
